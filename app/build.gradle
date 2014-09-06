@@ -28,4 +28,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/zxing-core-2.3.jar')
 }
