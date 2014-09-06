@@ -5,6 +5,10 @@
     <string name="title_activity_scanner">Scanner</string>
     <string name="hello_world">Hello world!</string>
     <string name="recycle_this">Recycle this</string>
+    <string name="item_plastic">This is plastic. Dispose in a blue bin.</string>
+    <string name="item_paper">This is paper. Dispose in a green bin.</string>
+    <string name="bin_paper">A green bin takes paper, cardboard and newspaper.</string>
+    <string name="bin_plastic">A blue bin takes plastic.</string>
 
     <!-- BarcodeEye -->
     <string name="app_picker_name">Applications</string>

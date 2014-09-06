@@ -25,6 +25,26 @@
                 android:name="com.google.android.glass.VoiceTrigger"
                 android:resource="@xml/voice_trigger" />
         </activity>
+
+        <activity
+            android:name="com.github.barcodeeye.scan.ResultsActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
+
+        <activity
+            android:name="com.intellibins.recyclethis.BinActivity"
+            android:label="@string/title_activity_scanner" >
+        </activity>
+
+        <activity
+            android:name="com.intellibins.recyclethis.ItemActivity"
+            android:label="@string/title_activity_scanner" >
+        </activity>
     </application>
 
 </manifest>

@@ -282,23 +282,26 @@ public final class CaptureActivity extends BaseGlassActivity implements
         }
     }
 
+    // TODO
     // Put up our own UI for how to handle the decoded contents.
     private void handleDecodeInternally(Result rawResult, Bitmap barcode) {
+        Intent intent = new Intent(this, ItemActivity.class);
+        intent.putExtra("ITEM_TYPE", "paper");
+        startActivity(intent);
+//        Uri imageUri = null;
+//        String imageName = IMAGE_PREFIX + System.currentTimeMillis() + ".png";
+//        Log.v(TAG, "Saving image as: " + imageName);
+//        try {
+//            imageUri = mImageManager.saveImage(imageName, barcode);
+//        } catch (IOException e) {
+//            Log.e(TAG, "Failed to save image!", e);
+//        }
+//
+//        ResultProcessor<?> processor = ResultProcessorFactory
+//                .makeResultProcessor(this, rawResult, imageUri);
 
-        Uri imageUri = null;
-        String imageName = IMAGE_PREFIX + System.currentTimeMillis() + ".png";
-        Log.v(TAG, "Saving image as: " + imageName);
-        try {
-            imageUri = mImageManager.saveImage(imageName, barcode);
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to save image!", e);
-        }
-
-        ResultProcessor<?> processor = ResultProcessorFactory
-                .makeResultProcessor(this, rawResult, imageUri);
-
-        startActivity(ResultsActivity.newIntent(this,
-                processor.getCardResults()));
+//        startActivity(ResultsActivity.newIntent(this,
+//                processor.getCardResults()));
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
