@@ -83,6 +83,12 @@ public final class CaptureActivity extends BaseGlassActivity implements
     private BeepManager mBeepManager;
     private AmbientLightManager mAmbientLightManager;
     private ImageManager mImageManager;
+    public static final String ITEM_TYPE = "ITEM_TYPE";
+    public static final String ITEM_PAPER = "ITEM_PAPER";
+    public static final String ITEM_PLASTIC = "ITEM_PLASTIC";
+    public static final String BIN_TYPE = "BIN_TYPE";
+    public static final String BIN_PAPER = "BIN_PAPER";
+    public static final String BIN_PLASTIC = "BIN_PLASTIC";
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CaptureActivity.class);
@@ -282,12 +288,24 @@ public final class CaptureActivity extends BaseGlassActivity implements
         }
     }
 
-    // TODO
+    // TODO UI
     // Put up our own UI for how to handle the decoded contents.
     private void handleDecodeInternally(Result rawResult, Bitmap barcode) {
-        Intent intent = new Intent(this, ItemActivity.class);
-        intent.putExtra("ITEM_TYPE", "paper");
-        startActivity(intent);
+        String text = rawResult.getText();
+        Log.v(TAG, "text " + text);
+        if(text.toLowerCase().contains("bin")) {
+            Intent intent = new Intent(this, BinActivity.class);
+            intent.putExtra(BIN_TYPE, text);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, ItemActivity.class);
+            intent.putExtra(ITEM_TYPE, text);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        finish();
+
 //        Uri imageUri = null;
 //        String imageName = IMAGE_PREFIX + System.currentTimeMillis() + ".png";
 //        Log.v(TAG, "Saving image as: " + imageName);

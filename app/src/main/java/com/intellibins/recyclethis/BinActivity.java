@@ -2,6 +2,8 @@ package com.intellibins.recyclethis;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
@@ -19,13 +21,20 @@ import java.util.List;
 public class BinActivity extends Activity {
 
     private CardScrollView mCardScroller;
-    private List<View> mViews = new ArrayList<View>();
+    private List<Card> mCards = new ArrayList<Card>();
+    private int mTextId = Integer.MAX_VALUE;
+    private int mDrawableId = Integer.MAX_VALUE;
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        mViews = buildView();
+        Intent intent = getIntent();
+        String type = (intent != null) ? intent.getStringExtra(CaptureActivity.BIN_TYPE) : "paper bin";
+        mTextId = type.equalsIgnoreCase("paper bin") ? R.string.bin_paper : R.string.bin_plastic;
+        mDrawableId = type.equalsIgnoreCase("paper bin") ? R.drawable.bin_plastic : R.drawable.bin_plastic;
+
+        mCards = buildView();
 
         mCardScroller = new CardScrollView(this);
         mCardScroller.setAdapter(new CardScrollAdapter() {
@@ -36,19 +45,19 @@ public class BinActivity extends Activity {
 
             @Override
             public Object getItem(int position) {
-                return mViews.get(position);
+                return mCards.get(position);
             }
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                return mViews.get(position);
+                return mCards.get(position).getView();
             }
 
             @Override
             public int getPosition(Object item) {
                 int i = 0;
-                for(View view : mViews) {
-                    if(view.equals(item))
+                for(Card card : mCards) {
+                    if(card.getView().equals(item))
                         return i;
                     i++;
                 }
@@ -77,26 +86,27 @@ public class BinActivity extends Activity {
         super.onPause();
     }
 
-    private List<View> buildView() {
+    private List<Card> buildView() {
+        List<Location> locations = MyApp.getBinLocations();
         Card card1 = new Card(this);
-        card1.setText(R.string.bin_plastic)
-                .setFootnote("1st Address")
+        card1.setText(mTextId)
+                .setFootnote(locations.get(0).getProvider())
                 .setImageLayout(Card.ImageLayout.LEFT)
-                .addImage(R.drawable.item_paper);
+                .addImage(mDrawableId);
         Card card2 = new Card(this);
-        card2.setText(R.string.bin_plastic)
-                .setFootnote("2st Address")
+        card2.setText(mTextId)
+                .setFootnote(locations.get(1).getProvider())
                 .setImageLayout(Card.ImageLayout.LEFT)
-                .addImage(R.drawable.item_paper);
+                .addImage(mDrawableId);
         Card card3 = new Card(this);
-        card3.setText(R.string.bin_plastic)
-                .setFootnote("3st Address")
+        card3.setText(mTextId)
+                .setFootnote(locations.get(2).getProvider())
                 .setImageLayout(Card.ImageLayout.LEFT)
-                .addImage(R.drawable.item_paper);
-        mViews.add(card1.getView());
-        mViews.add(card2.getView());
-        mViews.add(card3.getView());
-        return mViews;
+                .addImage(mDrawableId);
+        mCards.add(card1);
+        mCards.add(card2);
+        mCards.add(card3);
+        return mCards;
     }
 
 }

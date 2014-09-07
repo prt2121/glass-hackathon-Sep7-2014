@@ -2,6 +2,8 @@ package com.intellibins.recyclethis;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,8 @@ import com.google.android.glass.app.Card;
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +24,19 @@ import java.util.List;
 public class ItemActivity extends Activity {
 
     private CardScrollView mCardScroller;
-    private List<View> mViews = new ArrayList<View>();
+    private List<Card> mCards = new ArrayList<Card>();
+    private int mTextId = Integer.MAX_VALUE;
+    private int mDrawableId = Integer.MAX_VALUE;
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
-        mViews = buildView();
+        Intent intent = getIntent();
+        String type = (intent != null) ? intent.getStringExtra(CaptureActivity.ITEM_TYPE) : "paper";
+        mTextId = type.equalsIgnoreCase("paper") ? R.string.item_paper : R.string.item_plastic;
+        mDrawableId = type.equalsIgnoreCase("paper") ? R.drawable.bin_paper : R.drawable.bin_plastic;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        mCards = buildView();
 
         mCardScroller = new CardScrollView(this);
         mCardScroller.setAdapter(new CardScrollAdapter() {
@@ -37,19 +47,19 @@ public class ItemActivity extends Activity {
 
             @Override
             public Object getItem(int position) {
-                return mViews.get(position);
+                return mCards.get(position);
             }
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                return mViews.get(position);
+                return mCards.get(position).getView();
             }
 
             @Override
             public int getPosition(Object item) {
                 int i = 0;
-                for(View view : mViews) {
-                    if(view.equals(item))
+                for (Card card : mCards) {
+                    if (card.getView().equals(item))
                         return i;
                     i++;
                 }
@@ -78,26 +88,27 @@ public class ItemActivity extends Activity {
         super.onPause();
     }
 
-    private List<View> buildView() {
+    private List<Card> buildView() {
+        List<Location> locations = MyApp.getBinLocations();
         Card card1 = new Card(this);
-        card1.setText(R.string.bin_paper)
-                .setFootnote("1st Address")
+        card1.setText(mTextId)
+                .setFootnote(locations.get(0).getProvider())
                 .setImageLayout(Card.ImageLayout.LEFT)
                 .addImage(R.drawable.bin_plastic);
         Card card2 = new Card(this);
-        card2.setText(R.string.bin_paper)
-                .setFootnote("2st Address")
+        card2.setText(mTextId)
+                .setFootnote(locations.get(1).getProvider())
                 .setImageLayout(Card.ImageLayout.LEFT)
                 .addImage(R.drawable.bin_plastic);
         Card card3 = new Card(this);
-        card3.setText(R.string.bin_paper)
-                .setFootnote("3st Address")
+        card3.setText(mTextId)
+                .setFootnote(locations.get(2).getProvider())
                 .setImageLayout(Card.ImageLayout.LEFT)
                 .addImage(R.drawable.bin_plastic);
-        mViews.add(card1.getView());
-        mViews.add(card2.getView());
-        mViews.add(card3.getView());
-        return mViews;
+        mCards.add(card1);
+        mCards.add(card2);
+        mCards.add(card3);
+        return mCards;
     }
 
 }
